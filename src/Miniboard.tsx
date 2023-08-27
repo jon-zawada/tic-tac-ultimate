@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react";
-
 const Miniboard = (props: any) => {
   const boxName = (box: string) => {
     if (box === "X") return "x";
