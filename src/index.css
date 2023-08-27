@@ -4,7 +4,152 @@ html,
 body,
 #root,
 .app {
+  font-family: "Rubik", sans-serif;
+}
+
+
+.app-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.grid-wrapper {
+  display: grid;
+  grid-template-columns: 33.33% 33.33% 33.33%;
+  grid-template-rows: 33.33% 33.33% 33.33%;
+  width: 50%;
+  height: 50%;
+}
+
+.outer-grid-wrapper {
+  display: grid;
+  grid-template-columns: 33.33% 33.33% 33.33%;
+  grid-template-rows: 33.33% 33.33% 33.33%;
+  width: 748px;
+  height: 50%;
+}
+
+.outer-box {
+  width: 250px;
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: solid black 1px;
+}
+
+.box {
+  border: solid 1px black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.85);
+  background: rgba(0,0,0,0.10);
+  /* height: 15rem;
+  width: 100%; */
+}
+
+.box:hover {
+  cursor: pointer;
+  background: rgba(0,0,0,0.25);
+}
+
+.x {
+  border: solid 1px black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.85);
+  background: #004974;
+  color: #89dcf6;
+}
+
+.o {
+  border: solid 1px black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.85);
+  background: #a60011;
+  color: #ffc7b5;
+}
+
+/* .dimmed {
+  position: relative;
+}
+
+.dimmed:after {
+  content: " ";
+  z-index: 5;
+  display: block;
+  position: absolute;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.5);
+} */
+
+.modal-button {
+  background-color: #004974;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 32px;
+  cursor: pointer;
+}
+
+.gameover {
+  color: #a60011;
+  font-weight: bold;
+  text-align: center;
+  font-size: 36px;
+}
+
+.wrapper-modal {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  justify-self: center;
+  gap: 10px;
+}
+
+.donex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.85);
+  background: #004974;
+  color: #89dcf6;
   height: 100%;
   width: 100%;
-  font-family: "Rubik", sans-serif;
+  font-size: 32px;
+}
+
+.doneo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.85);
+  background: #a60011;
+  color: #ffc7b5;
+  height: 100%;
+  width: 100%;
+  font-size: 32px;
+}
+
+.donecats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.85);
+  color: black;
+  height: 100%;
+  width: 100%;
+  font-size: 32px;
 }
