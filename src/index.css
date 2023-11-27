@@ -5,13 +5,19 @@ body,
 #root,
 .app {
   font-family: "Rubik", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 
 .app-wrapper {
   display: flex;
+  flex-direction: column;
+  gap: 30px;
   align-items: center;
   justify-content: center;
+  padding-bottom: 100px;
 }
 
 .grid-wrapper {
@@ -23,16 +29,20 @@ body,
 }
 
 .outer-grid-wrapper {
-  display: grid;
-  grid-template-columns: 33.33% 33.33% 33.33%;
-  grid-template-rows: 33.33% 33.33% 33.33%;
-  width: 748px;
-  height: 50%;
+  width: 700px;
+	height: 700px;
+	margin: 0 auto;
+  border-radius: 10px;
+	display: grid;
+	grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+  /* border: solid pink 5px;
+  padding: 15px;
+  background-color: #dab4f0; */
 }
 
 .outer-box {
-  width: 250px;
-  height: 250px;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -152,4 +162,31 @@ body,
   height: 100%;
   width: 100%;
   font-size: 32px;
+}
+
+@media (max-width: 768px) {
+  .outer-grid-wrapper {
+    width: 650px;
+	  height: 650px;
+  }
+}
+
+@media (max-width: 576px) {
+  .outer-grid-wrapper {
+    width: 500px;
+	  height: 500px;
+  }
+}
+
+.header {
+  margin: 15px;
+  padding: 15px;
+}
+
+h1 {
+  text-align: center;
+}
+
+h2 {
+  text-align: center;
 }
