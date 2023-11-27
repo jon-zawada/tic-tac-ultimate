@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import Miniboard from "./Miniboard";
-import { Container, Col, Button } from "react-bootstrap";
+import { Container, Col } from "react-bootstrap";
 import { checkCats, checkWinner } from "./utils";
 
 const initState = [
@@ -107,12 +107,12 @@ function App() {
     }
   };
 
-  const resetGame = () => {
-    setState(initState); //this doesnt work
-    setBoxStatus(initBoxStatus);
-    setPlayableBox([]);
-    setCurrentPlay("X");
-  };
+  // const resetGame = () => {
+  //   setState(initState); //this doesnt work
+  //   setBoxStatus(initBoxStatus);
+  //   setPlayableBox([]);
+  //   setCurrentPlay("X");
+  // };
 
   return (
     <>
