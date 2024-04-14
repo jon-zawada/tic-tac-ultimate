@@ -19,10 +19,10 @@ const Miniboard = (props: any) => {
         <div
           className={
             props.status === "X"
-              ? "donex"
+              ? "done-x"
               : props.status === "O"
-              ? "doneo"
-              : "donecats"
+              ? "done-o"
+              : "done-cats"
           }
         >
           {props.status}
