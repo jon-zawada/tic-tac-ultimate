@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import Miniboard from "./Miniboard";
-import { Container, Col } from "react-bootstrap";
 import { checkCats, checkWinner } from "./utils";
 
 const initState = [
@@ -120,27 +119,28 @@ function App() {
         <h1>TIC TAC TOE</h1>
         <h2>Ultimate</h2>
       </div>
-      <Container fluid className="app-wrapper">
-        <Container className="outer-grid-wrapper">
-          {state.map((row, i) =>
-            row.map((grid, j) => (
-              <Col key={`box-${i}${j}`}>
-                <Miniboard
-                  playableBox={playableBox}
-                  status={boxStatus[i][j]}
-                  grid={grid}
-                  i={i}
-                  j={j}
-                  play={play}
-                />
-              </Col>
-            ))
-          )}
-        </Container>
-        {/* <Button variant="primary" size="lg" onClick={resetGame}>
-          Restart game
-        </Button> */}
-      </Container>
+      <div className="app-wrapper">
+        <table className="outer-table">
+          <tbody>
+            {state.map((row, i) => (
+              <tr key={`row-${i}`}>
+                {row.map((grid, j) => (
+                  <td className="outer-td" key={`cell-${i}${j}`}>
+                    <Miniboard
+                      playableBox={playableBox}
+                      status={boxStatus[i][j]}
+                      grid={grid}
+                      i={i}
+                      j={j}
+                      play={play}
+                    />
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </>
   );
 }
