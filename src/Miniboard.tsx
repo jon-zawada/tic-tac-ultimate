@@ -1,42 +1,48 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-const Miniboard = (props: any) => {
-  const boxName = (box: string) => {
-    if (box === "X") return "x";
-    if (box === "O") return "o";
+import { BoxStatus, Cell, MicroBoard } from "./utils";
+
+interface MiniboardProps {
+  playableBox: [number, number] | null;
+  status: BoxStatus;
+  grid: MicroBoard;
+  i: number;
+  j: number;
+  play: (i: number, j: number, y: number, z: number) => void;
+}
+
+const Miniboard = ({ playableBox, status, grid, i, j, play }: MiniboardProps) => {
+  const cellClass = (cell: Cell): string => {
+    if (cell === "X") return "x";
+    if (cell === "O") return "o";
     return "box";
   };
 
-  const outerBox = () => {
-    if (!props.playableBox.length || props.status != "") return "outer-box";
-    const [propI, propJ] = props.playableBox;
-    if (props.i !== propI || props.j !== propJ) return "outer-box dimmed";
+  const outerClass = (): string => {
+    if (playableBox === null || status !== "") return "outer-box";
+    const [pi, pj] = playableBox;
+    if (i !== pi || j !== pj) return "outer-box dimmed";
     return "outer-box";
   };
 
+  const doneClass = (): string => {
+    if (status === "X") return "done-x";
+    if (status === "O") return "done-o";
+    return "done-cats";
+  };
+
   return (
-    <div className={outerBox()}>
-      {props.status != "" ? (
-        <div
-          className={
-            props.status === "X"
-              ? "done-x"
-              : props.status === "O"
-              ? "done-o"
-              : "done-cats"
-          }
-        >
-          {props.status}
-        </div>
+    <div className={outerClass()}>
+      {status !== "" ? (
+        <div className={doneClass()}>{status}</div>
       ) : (
         <div className="grid-wrapper">
-          {props.grid.map((row: any[], y: number) =>
-            row.map((box: string, z: number) => (
+          {grid.map((row, y) =>
+            row.map((cell, z) => (
               <div
                 key={`grid-${y}${z}`}
-                className={boxName(box)}
-                onClick={() => props.play(props.i, props.j, y, z)}
+                className={cellClass(cell)}
+                onClick={() => play(i, j, y, z)}
               >
-                {box}
+                {cell}
               </div>
             ))
           )}

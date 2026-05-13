@@ -1,117 +1,80 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react";
+import { useState } from "react";
 import Miniboard from "./Miniboard";
-import { checkCats, checkWinner } from "./utils";
+import { checkCats, checkWinner, Cell, Player, MicroBoard, MacroBoard, MacroStatus, BoxStatus } from "./utils";
 
-const initState = [
-  [
-    [
-      ["", "", ""],
-      ["", "", ""],
-      ["", "", ""],
-    ],
-    [
-      ["", "", ""],
-      ["", "", ""],
-      ["", "", ""],
-    ],
-    [
-      ["", "", ""],
-      ["", "", ""],
-      ["", "", ""],
-    ],
-  ],
-  [
-    [
-      ["", "", ""],
-      ["", "", ""],
-      ["", "", ""],
-    ],
-    [
-      ["", "", ""],
-      ["", "", ""],
-      ["", "", ""],
-    ],
-    [
-      ["", "", ""],
-      ["", "", ""],
-      ["", "", ""],
-    ],
-  ],
-  [
-    [
-      ["", "", ""],
-      ["", "", ""],
-      ["", "", ""],
-    ],
-    [
-      ["", "", ""],
-      ["", "", ""],
-      ["", "", ""],
-    ],
-    [
-      ["", "", ""],
-      ["", "", ""],
-      ["", "", ""],
-    ],
-  ],
+const makeEmptyMicroBoard = (): MicroBoard => [
+  ["", "", ""],
+  ["", "", ""],
+  ["", "", ""],
 ];
 
-const initBoxStatus = [
+const makeEmptyMacroBoard = (): MacroBoard => [
+  [makeEmptyMicroBoard(), makeEmptyMicroBoard(), makeEmptyMicroBoard()],
+  [makeEmptyMicroBoard(), makeEmptyMicroBoard(), makeEmptyMicroBoard()],
+  [makeEmptyMicroBoard(), makeEmptyMicroBoard(), makeEmptyMicroBoard()],
+];
+
+const makeEmptyMacroStatus = (): MacroStatus => [
   ["", "", ""],
   ["", "", ""],
   ["", "", ""],
 ];
 
 function App() {
-  const [state, setState] = React.useState(initState);
-  const [boxStatus, setBoxStatus] = React.useState(initBoxStatus);
-  const [playableBox, setPlayableBox] = React.useState<any[]>([]);
-  const [currentPlay, setCurrentPlay] = React.useState("X");
+  const [board, setBoard] = useState<MacroBoard>(makeEmptyMacroBoard);
+  const [boxStatus, setBoxStatus] = useState<MacroStatus>(makeEmptyMacroStatus);
+  const [playableBox, setPlayableBox] = useState<[number, number] | null>(null);
+  const [currentPlayer, setCurrentPlayer] = useState<Player>("X");
+  const [winner, setWinner] = useState<Player | "CATS" | null>(null);
 
-  const updatePlayable = (y: number, z: number) => {
-    if (boxStatus[y][z] !== "") {
-      setPlayableBox([]);
-    } else {
-      setPlayableBox([y, z]);
-    }
+  const resetGame = () => {
+    setBoard(makeEmptyMacroBoard());
+    setBoxStatus(makeEmptyMacroStatus());
+    setPlayableBox(null);
+    setCurrentPlayer("X");
+    setWinner(null);
   };
 
   const play = (i: number, j: number, y: number, z: number) => {
-    if (state[i][j][y][z] === "") {
-      setState((prev) => {
-        prev[i][j][y][z] = currentPlay;
-        updatePlayable(y, z);
-        if (checkWinner(prev[i][j])) {
-          setPlayableBox([]);
-          setBoxStatus((prev) => {
-            prev[i][j] = currentPlay;
-            const gameOver = checkWinner(prev) || checkCats(prev);
-            if (gameOver) {
-              alert("GAME WON REFRESH TO PLAY AGAIN");
-            }
-            return prev;
-          });
-        }
-        if (checkCats(prev[i][j])) {
-          setPlayableBox([]);
-          setBoxStatus((prev) => {
-            prev[i][j] = "CATS";
-            return prev;
-          });
-        }
-        return prev;
-      });
-      setCurrentPlay(currentPlay === "X" ? "O" : "X");
-    }
-  };
+    if (winner !== null) return;
+    if (board[i][j][y][z] !== "") return;
+    if (boxStatus[i][j] !== "") return;
+    if (playableBox !== null && (playableBox[0] !== i || playableBox[1] !== j)) return;
 
-  // const resetGame = () => {
-  //   setState(initState); //this doesnt work
-  //   setBoxStatus(initBoxStatus);
-  //   setPlayableBox([]);
-  //   setCurrentPlay("X");
-  // };
+    // Deep copy board and place the move
+    const nextBoard: MacroBoard = board.map(row =>
+      row.map(grid =>
+        grid.map(r => [...r] as [Cell, Cell, Cell]) as MicroBoard
+      ) as [MicroBoard, MicroBoard, MicroBoard]
+    ) as MacroBoard;
+    nextBoard[i][j][y][z] = currentPlayer;
+
+    // Compute new box status for the just-played mini-grid
+    const nextBoxStatus: MacroStatus = boxStatus.map(
+      row => [...row] as [BoxStatus, BoxStatus, BoxStatus]
+    ) as MacroStatus;
+
+    if (checkWinner(nextBoard[i][j])) {
+      nextBoxStatus[i][j] = currentPlayer;
+    } else if (checkCats(nextBoard[i][j])) {
+      nextBoxStatus[i][j] = "CATS";
+    }
+
+    // The cell played at (y, z) sends the next player to mini-grid (y, z)
+    const nextPlayable: [number, number] | null =
+      nextBoxStatus[y][z] !== "" ? null : [y, z];
+
+    if (checkWinner(nextBoxStatus)) {
+      setWinner(currentPlayer);
+    } else if (checkCats(nextBoxStatus)) {
+      setWinner("CATS");
+    }
+
+    setBoard(nextBoard);
+    setBoxStatus(nextBoxStatus);
+    setPlayableBox(nextPlayable);
+    setCurrentPlayer(currentPlayer === "X" ? "O" : "X");
+  };
 
   return (
     <>
@@ -120,9 +83,17 @@ function App() {
         <h2>Ultimate</h2>
       </div>
       <div className="app-wrapper">
+        {winner !== null ? (
+          <div className="gameover">
+            <p>{winner === "CATS" ? "It's a draw!" : `${winner} wins!`}</p>
+            <button className="modal-button" onClick={resetGame}>Play Again</button>
+          </div>
+        ) : (
+          <p className="current-player">{currentPlayer}&apos;s turn</p>
+        )}
         <table className="outer-table">
           <tbody>
-            {state.map((row, i) => (
+            {board.map((row, i) => (
               <tr key={`row-${i}`}>
                 {row.map((grid, j) => (
                   <td className="outer-td" key={`cell-${i}${j}`}>
@@ -140,6 +111,9 @@ function App() {
             ))}
           </tbody>
         </table>
+        {winner === null && (
+          <button className="modal-button" onClick={resetGame}>Reset</button>
+        )}
       </div>
     </>
   );
